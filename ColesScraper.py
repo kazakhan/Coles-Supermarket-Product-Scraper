@@ -3,21 +3,17 @@ import csv
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from msedge.selenium_tools import Edge,EdgeOptions
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+
 # Configure Chrome options
 options = Options()
-#options.headless = True
-edge_options = EdgeOptions()  
-edge_options.use_chromium = True  
-edge_options.add_argument("start-maximized")  
-edge_options.add_argument("inprivate")
-edge_options.add_argument("headless")
 
 # Initialize the Chrome driver
-driver = webdriver.Edge(edge_options)
+driver = webdriver.Edge(EdgeChromiumDriverManager().install())
 url = "https://www.coles.com.au"
 print("Here we go...")
 # Navigate to the Coles website
