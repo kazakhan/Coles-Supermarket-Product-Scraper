@@ -33,6 +33,11 @@ for category in categories:
     category_link = category.get("href")
     category_link = url + category_link
     print(category_link)
+    
+    # Tobacco category has an age check so stop here
+    if category == "tobacco":
+        break;
+        
     if category_link is not None:
         # Follow the link to the category page
         driver.get(category_link)
@@ -68,8 +73,8 @@ for category in categories:
                 pages = pagination.find_all("li")
                 last_page = pages[-2].text
                 last_page = int(last_page)
-                #total_pages = int(pages[-1].text.strip())
-                print(last_page)
+                total_pages = int(pages[-2].text.strip())
+                print(total_pages)
                 for page in range(2, last_page + 1):
                     # Get the link to the next page
                     next_page_link = f"{category_link}?page={page}"
