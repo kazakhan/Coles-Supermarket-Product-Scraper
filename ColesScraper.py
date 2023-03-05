@@ -25,18 +25,18 @@ soup = BeautifulSoup(driver.page_source, "html.parser")
 # Find all product categories on the page
 categories = soup.find_all("a", class_="coles-targeting-ShopCategoriesShopCategoryStyledCategoryContainer")
 
-print("Are we there yet?")
-
 # Iterate through each category and follow the link to get the products
 for category in categories:
     # Get the link to the category page
     category_link = category.get("href")
+    print(category_link)
+    # Liqour breaks more often than not and the Tobacco category has an age check so stop here
+    if category_link == "/browse/liquor":
+        break;
     category_link = url + category_link
     print(category_link)
     
-    # Tobacco category has an age check so stop here
-    if category == "tobacco":
-        break;
+
         
     if category_link is not None:
         # Follow the link to the category page
@@ -62,14 +62,19 @@ for category in categories:
                     name = product.find("h2", class_="product__title")
                     price = product.find("span", class_="price__value")
                     productLink = product.find("a", class_="product__link")["href"]
+                    productcode = productLink.split("-")[-1]
                     if name and price:
                         name = name.text.strip()
                         price = price.text.strip()
                         link = url + productLink
-                        writer.writerow([name, price, link])
+                        writer.writerow([productcode, name, price, link])
                           
                 # Get the number of pages
-                pagination = soup.find("ul", class_="coles-targeting-PaginationPaginationUl")
+                try:
+                    pagination = soup.find("ul", class_="coles-targeting-PaginationPaginationUl")
+                except:
+                    break
+
                 pages = pagination.find_all("li")
                 last_page = pages[-2].text
                 last_page = int(last_page)
@@ -92,10 +97,12 @@ for category in categories:
                         name = product.find("h2", class_="product__title")
                         price = product.find("span", class_="price__value")
                         productLink = product.find("a", class_="product__link")["href"]
+                        productcode = productLink.split("-")[-1]
                         if name and price:
                             name = name.text.strip()
                             price = price.text.strip()
                             link = url + productLink
-                            writer.writerow([name, price, link]) 
+                            writer.writerow([productcode, name, price, link]) 
                 if page == last_page:
                     break
+print("Finished")
