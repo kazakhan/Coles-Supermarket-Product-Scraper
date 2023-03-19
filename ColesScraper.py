@@ -1,6 +1,7 @@
 # Import the required libraries
 import csv
 import os
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
@@ -25,13 +26,14 @@ soup = BeautifulSoup(driver.page_source, "html.parser")
 # Find all product categories on the page
 categories = soup.find_all("a", class_="coles-targeting-ShopCategoriesShopCategoryStyledCategoryContainer")
 
+for category in categories:
+    print(category.text)
 # Iterate through each category and follow the link to get the products
 for category in categories:
     # Get the link to the category page
     category_link = category.get("href")
-    print(category_link)
     # Liqour breaks more often than not and the Tobacco category has an age check so stop here
-    if category_link == "/browse/liquor":
+    if category_link == "/browse/tobacco":
         break;
     category_link = url + category_link
     print(category_link)
@@ -50,7 +52,7 @@ for category in categories:
             products = soup.find_all("header", class_="product__header")
             
             # Create a new csv file for each category
-            filename = category.text.strip().replace("/", "") + ".csv"
+            filename = category.text + ".csv"
             filepath = "D:\\Documents\\Budget\\" + filename
             if os.path.exists(filepath):
                 os.remove(filepath)
@@ -102,7 +104,8 @@ for category in categories:
                             name = name.text.strip()
                             price = price.text.strip()
                             link = url + productLink
-                            writer.writerow([productcode, name, price, link]) 
+                            writer.writerow([productcode, name, price, link])
+                time.sleep(3)
                 if page == last_page:
                     break
 print("Finished")
